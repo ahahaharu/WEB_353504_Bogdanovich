@@ -1,0 +1,14 @@
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString()?.ToLower() ?? string.Empty;
+
+    bool isadmin = ViewContext.RouteData.Values["area"]
+                ?.ToString()?
+                .Equals("admin", StringComparison.OrdinalIgnoreCase)?? false;
+}
+
+<a class="navbar-brand" href="#">353504</a>
+<div class="navbar-nav">
+    <a class="nav-item nav-link @(controller == "home" ? "active" : "")" asp-controller="Home" asp-action="Index">Лб1</a>
+    <a class="nav-item nav-link @(controller == "product" ? "active" : "")" asp-controller="Product" asp-action="Index">Каталог</a>
+    <a class="nav-item nav-link @((String.IsNullOrEmpty(controller) && isadmin) ? "active" : "")" asp-area="Admin" asp-page="/Index">Администрирование</a>
+</div>

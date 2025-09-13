@@ -1,19 +1,18 @@
-﻿@{
+﻿@model Microsoft.AspNetCore.Mvc.Rendering.SelectList
+@{
     ViewData["Title"] = "Index";
 }
 
-        <h1>Список</h1>
+        <h1>@ViewData["Lab"]</h1>
         <ol type="A">
-            <li>элемент 0 списка</li>
-            <li>элемент 1 списка</li>
-            <li>элемент 2 списка</li>
-            <li>элемент 3 списка</li>
-            <li>элемент 4 списка</li>
+            @for (int i = 0; i < 5; i++)
+            {
+                <li>элемент @i списка</li>
+            }
         </ol>
 
         <h1>Форма</h1>
         <form method="post">
-            <!-- Чекбоксы в столбик -->
             <div class="form-group">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="checkbox1" name="checkbox1">
@@ -25,7 +24,6 @@
                 </div>
             </div>
 
-            <!-- Радио-кнопки в ряд (inline) -->
             <div class="form-group">
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" id="radio1" name="radioGroup" value="radio1">
@@ -41,22 +39,22 @@
                 </div>
             </div>
 
-            <!-- Поле логина -->
+            <div class="form-group">
+                <label for="listSelect">Список:</label>
+                <select id="listSelect" name="selectedId" class="form-control" asp-items="@Model"></select>
+            </div>
+
             <div class="form-group row">
                 <label for="login" class="col-sm-2 col-form-label">Логин:</label>
                 <div class="col-sm-10">
                     <input type="text" class="form-control" id="login" name="login" placeholder="Введите имя">
                 </div>
             </div>
-
-            <!-- Поле пароля -->
             <div class="form-group row">
                 <label for="password" class="col-sm-2 col-form-label">Пароль:</label>
                 <div class="col-sm-10">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль">
                 </div>
             </div>
-
-            <!-- Кнопка отправки -->
             <button type="submit" class="btn btn-primary">Отправить</button>
         </form>
