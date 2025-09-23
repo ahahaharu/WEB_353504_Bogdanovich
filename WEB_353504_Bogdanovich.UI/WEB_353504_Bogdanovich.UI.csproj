@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WEB_353504_Bogdanovich.Domain\WEB_353504_Bogdanovich.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

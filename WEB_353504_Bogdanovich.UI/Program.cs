@@ -1,7 +1,10 @@
+using WEB_353504_Bogdanovich.UI.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.RegisterCustomServices();
 
 var app = builder.Build();
 
@@ -25,3 +28,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+builder.RegisterCustomServices();

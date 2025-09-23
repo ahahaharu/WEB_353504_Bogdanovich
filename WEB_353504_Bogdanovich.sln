@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEB_353504_Bogdanovich.UI", "WEB_353504_Bogdanovich.UI\WEB_353504_Bogdanovich.UI.csproj", "{08FB2E70-2B91-4C23-8B8F-E93D1086F77D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEB_353504_Bogdanovich.Domain", "WEB_353504_Bogdanovich.Domain\WEB_353504_Bogdanovich.Domain.csproj", "{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{08FB2E70-2B91-4C23-8B8F-E93D1086F77D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08FB2E70-2B91-4C23-8B8F-E93D1086F77D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08FB2E70-2B91-4C23-8B8F-E93D1086F77D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
