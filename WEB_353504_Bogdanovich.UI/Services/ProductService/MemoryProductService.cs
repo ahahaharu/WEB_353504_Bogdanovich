@@ -26,18 +26,18 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
     new Dish { Id = 4, Name = "Шурпа", Description = "Дичь какая-то", Calories = 300, Image = "images/Shurpa.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("soups")) },
     new Dish { Id = 5, Name = "Тыквенный суп", Description = "Со сливками", Calories = 340, Image = "images/Tikvenniy_sup.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("soups")) },
     new Dish { Id = 6, Name = "Солянка", Description = "Сборная", Calories = 400, Image = "images/Solyanka.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("soups")) },
-    new Dish { Id = 7, Name = "Плов", Description = "С бараниной и специями", Calories = 600, Image = "images/Plov.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("main_courses")) },
-    new Dish { Id = 8, Name = "Котлета по-киевски", Description = "С маслом внутри", Calories = 550, Image = "images/Kotleta_kievskaya.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("main_courses")) },
-    new Dish { Id = 9, Name = "Жареная картошка", Description = "С луком и грибами", Calories = 480, Image = "images/Zhar_kartoshka.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("main_courses")) },
+    new Dish { Id = 7, Name = "Плов", Description = "С бараниной и специями", Calories = 600, Image = "images/Plov.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("main-dishes")) },
+    new Dish { Id = 8, Name = "Котлета по-киевски", Description = "С маслом внутри", Calories = 550, Image = "images/Kotleta_kievskaya.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("main-dishes")) },
+    new Dish { Id = 9, Name = "Жареная картошка", Description = "С луком и грибами", Calories = 480, Image = "images/Zhar_kartoshka.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("main-dishes")) },
     new Dish { Id = 10, Name = "Чизкейк", Description = "Нью-Йоркский стиль", Calories = 400, Image = "images/Cheesecake.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("desserts")) },
     new Dish { Id = 11, Name = "Тирамису", Description = "С кофе и маскарпоне", Calories = 350, Image = "images/Tiramisu.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("desserts")) },
     new Dish { Id = 12, Name = "Медовик", Description = "С кремом из сгущёнки", Calories = 450, Image = "images/Medovik.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("desserts")) },
     new Dish { Id = 13, Name = "Оливье", Description = "Классический, с колбасой", Calories = 300, Image = "images/Olivie.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("salads")) },
     new Dish { Id = 14, Name = "Цезарь", Description = "С курицей и пармезаном", Calories = 320, Image = "images/Caesar.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("salads")) },
     new Dish { Id = 15, Name = "Греческий", Description = "С фетой и оливками", Calories = 250, Image = "images/Greek_salad.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("salads")) },
-    new Dish { Id = 16, Name = "Чай с мёдом", Description = "Травяной, успокаивающий", Calories = 50, Image = "images/Tea.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("beverages")) },
-    new Dish { Id = 17, Name = "Кофе латте", Description = "С молоком и пенкой", Calories = 120, Image = "images/Latte.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("beverages")) },
-    new Dish { Id = 18, Name = "Морс", Description = "Из клюквы, свежий", Calories = 70, Image = "images/Mors.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("beverages")) }
+    new Dish { Id = 16, Name = "Чай с мёдом", Description = "Травяной, успокаивающий", Calories = 50, Image = "images/Tea.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("drinks")) },
+    new Dish { Id = 17, Name = "Кофе латте", Description = "С молоком и пенкой", Calories = 120, Image = "images/Latte.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("drinks")) },
+    new Dish { Id = 18, Name = "Морс", Description = "Из клюквы, свежий", Calories = 70, Image = "images/Mors.jpg", Category = _categories.Find(c => c.NormalizedName.Equals("drinks")) }
 };
         }
 
