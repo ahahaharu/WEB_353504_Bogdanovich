@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEB_353504_Bogdanovich.UI",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEB_353504_Bogdanovich.Domain", "WEB_353504_Bogdanovich.Domain\WEB_353504_Bogdanovich.Domain.csproj", "{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WEB_353504_Bogdanovich.API", "WEB_353504_Bogdanovich.API\WEB_353504_Bogdanovich.API.csproj", "{4F2E451C-EF29-47BF-A97E-B6F57162B453}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{05CE3CC9-4C4B-44C2-A83A-F47EC16BB4B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F2E451C-EF29-47BF-A97E-B6F57162B453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F2E451C-EF29-47BF-A97E-B6F57162B453}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F2E451C-EF29-47BF-A97E-B6F57162B453}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F2E451C-EF29-47BF-A97E-B6F57162B453}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
