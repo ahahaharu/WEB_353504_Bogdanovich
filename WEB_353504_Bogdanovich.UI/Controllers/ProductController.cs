@@ -17,15 +17,22 @@ namespace WEB_353504_Bogdanovich.UI.Controllers
         {
             var productResponse = await _productService.GetProductListAsync(category, pageNo);
             if (!productResponse.Successfull)
+            {
                 return NotFound(productResponse.ErrorMessage);
+            }
 
             var categoriesResponse = await _categoryService.GetCategoryListAsync();
+            if (!categoriesResponse.Successfull)
+            {
+                return NotFound(categoriesResponse.ErrorMessage);
+            }
+
             ViewData["categories"] = categoriesResponse.Data;
             ViewData["currentCategory"] = category == null ? "Все" : categoriesResponse.Data.FirstOrDefault(c => c.NormalizedName == category)?.Name ?? "Все";
 
             ViewBag.ReturnUrl = Request.Path + Request.QueryString.ToUriComponent();
 
-            return View(productResponse.Data); 
+            return View(productResponse.Data);
         }
     }
 }
