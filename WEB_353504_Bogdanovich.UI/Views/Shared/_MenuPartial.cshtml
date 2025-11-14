@@ -10,5 +10,8 @@
 <div class="navbar-nav">
     <a class="nav-item nav-link @(controller == "home" ? "active" : "")" asp-controller="Home" asp-action="Index">Лб1</a>
     <a class="nav-item nav-link @(controller == "product" ? "active" : "")" asp-controller="Product" asp-action="Index">Каталог</a>
-    <a class="nav-item nav-link @((String.IsNullOrEmpty(controller) && isadmin) ? "active" : "")" asp-area="Admin" asp-page="/Index">Администрирование</a>
+    <a class="nav-item nav-link @((String.IsNullOrEmpty(controller) && isadmin) ? "active" : "")"
+       href="/Admin/Dishes">
+        Администрирование
+    </a>
 </div>

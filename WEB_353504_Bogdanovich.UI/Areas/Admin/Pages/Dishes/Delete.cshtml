@@ -1,0 +1,34 @@
+﻿@page "{id:int}"
+@model WEB_353504_Bogdanovich.UI.Areas.Admin.Pages.Dishes.DeleteModel
+
+@{
+    ViewData["Title"] = "Удаление блюда";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-danger">
+    <h4>Вы уверены, что хотите удалить это блюдо?</h4>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(Model.Dish.Image))
+        {
+            <img src="@Model.Dish.Image" alt="@Model.Dish.Name" class="img-fluid mb-3" style="max-height: 200px;" />
+        }
+        <p><strong>Название:</strong> @Html.DisplayFor(model => model.Dish.Name)</p>
+        <p><strong>Описание:</strong> @Html.DisplayFor(model => model.Dish.Description)</p>
+        <p><strong>Калории:</strong> @Html.DisplayFor(model => model.Dish.Calories)</p>
+    </div>
+    <div class="card-footer">
+        <form method="post"
+              asp-page="./Delete"
+              asp-route-id="@Model.Dish.Id"
+              asp-page-handler="Post">
+            <input type="hidden" asp-for="Dish.Id" />
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a asp-page="./Index" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>

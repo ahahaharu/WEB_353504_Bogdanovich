@@ -1,0 +1,62 @@
+﻿@page "{id:int}"
+@model EditModel
+@{
+    ViewData["Title"] = "Редактировать блюдо";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Dish.Id" />
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.Name"></label>
+        <input asp-for="Dish.Name" class="form-control" />
+        <span asp-validation-for="Dish.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.Description"></label>
+        <textarea asp-for="Dish.Description" class="form-control"></textarea>
+        <span asp-validation-for="Dish.Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.Calories"></label>
+        <input asp-for="Dish.Calories" class="form-control" />
+        <span asp-validation-for="Dish.Calories" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.CategoryId"></label>
+        @* 🛑 ИСПРАВЛЕНИЕ: Добавлена проверка ?? new List<object>() 🛑 *@
+        <select asp-for="Dish.CategoryId"
+                class="form-control"
+                asp-items="@(new SelectList(ViewBag.Categories ?? new List<object>(), "Id", "Name"))">
+        </select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label>Текущее изображение:</label><br />
+        @if (!string.IsNullOrEmpty(Model.Dish.Image))
+        {
+            <img src="@Model.Dish.Image" alt="Текущее изображение" width="200" class="img-thumbnail" />
+        }
+        else
+        {
+            <span class="text-muted">Изображение не загружено</span>
+        }
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ImageFile">Новое изображение</label>
+        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Сохранить</button>
+    <a asp-page="./Index" class="btn btn-secondary">Отмена</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

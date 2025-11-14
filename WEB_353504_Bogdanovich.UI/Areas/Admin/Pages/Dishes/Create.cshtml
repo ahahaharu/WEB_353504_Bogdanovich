@@ -1,0 +1,44 @@
+﻿@page
+@model CreateModel
+@{
+    ViewData["Title"] = "Создать блюдо";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group mb-3">
+        <label asp-for="Dish.Name"></label>
+        <input asp-for="Dish.Name" class="form-control" />
+        <span asp-validation-for="Dish.Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.Description"></label>
+        <textarea asp-for="Dish.Description" class="form-control"></textarea>
+        <span asp-validation-for="Dish.Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.Calories"></label>
+        <input asp-for="Dish.Calories" class="form-control" />
+        <span asp-validation-for="Dish.Calories" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Dish.CategoryId"></label>
+        <select asp-for="Dish.CategoryId" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))"></select>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="ImageFile">Изображение</label>
+        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Создать</button>
+    <a asp-page="./Index" class="btn btn-secondary">Отмена</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

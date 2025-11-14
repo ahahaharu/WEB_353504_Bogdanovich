@@ -1,0 +1,92 @@
+﻿@page
+@model WEB_353504_Bogdanovich.UI.Areas.Admin.Pages.Dishes.IndexModel
+
+@{
+    ViewData["Title"] = "Администрирование блюд";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Создать новое блюдо</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Изображение
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DishListModel.Items[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DishListModel.Items[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DishListModel.Items[0].Calories)
+            </th>
+            <th>
+                Действия
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.DishListModel.Items)
+        {
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <img src="@item.Image" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Calories)
+                </td>
+                <td class="text-end">
+                    <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Изменить</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Подробности</a> |
+                    <a asp-area="Admin" asp-page="/Dishes/Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.DishListModel.TotalPages > 0)
+{
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @{
+                int prev = Model.DishListModel.CurrentPage == 1
+                ? 1
+                : Model.DishListModel.CurrentPage - 1;
+
+                int next = Model.DishListModel.CurrentPage == Model.DishListModel.TotalPages
+                ? Model.DishListModel.TotalPages
+                : Model.DishListModel.CurrentPage + 1;
+            }
+
+            <li class="page-item @(Model.DishListModel.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageNo="@prev">Предыдущая</a>
+            </li>
+
+            @for (int i = 1; i <= Model.DishListModel.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.DishListModel.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./Index" asp-route-pageNo="@i">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.DishListModel.CurrentPage == Model.DishListModel.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./Index" asp-route-pageNo="@next">Следующая</a>
+            </li>
+        </ul>
+    </nav>
+}

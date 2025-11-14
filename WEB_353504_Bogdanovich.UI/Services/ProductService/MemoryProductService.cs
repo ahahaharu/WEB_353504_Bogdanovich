@@ -70,16 +70,16 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
             return Task.FromResult(dish != null ? ResponseData<Dish>.Success(dish) : ResponseData<Dish>.Error("Not found"));
         }
 
-        public Task UpdateProductAsync(int id, Dish product, IFormFile? formFile)
+        public Task<ResponseData<object>> UpdateProductAsync(int id, Dish product, IFormFile? formFile)
         {
-            // Заглушка
-            return Task.CompletedTask;
+            // Реализуй или верни заглушку
+            return Task.FromResult(ResponseData<object>.Success(null));
         }
 
-        public Task DeleteProductAsync(int id)
+        public Task<ResponseData<object>> DeleteProductAsync(int id)
         {
-            // Заглушка
-            return Task.CompletedTask;
+            // Реализуй или заглушка
+            return Task.FromResult(ResponseData<object>.Success(null));
         }
 
         public Task<ResponseData<Dish>> CreateProductAsync(Dish product, IFormFile? formFile)
