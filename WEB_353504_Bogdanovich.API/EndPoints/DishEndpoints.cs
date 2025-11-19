@@ -6,6 +6,7 @@ using WEB_353504_Bogdanovich.Domain.Entities;
 using WEB_353504_Bogdanovich.API.UseCases;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing; 
 
 namespace WEB_353504_Bogdanovich.API.EndPoints;
 
@@ -13,34 +14,28 @@ public static class DishEndpoints
 {
     public static void MapDishEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/api/Dish").WithTags(nameof(Dish));
+        var group = routes.MapGroup("/api/Dish")
+            .WithTags(nameof(Dish))
+            .DisableAntiforgery() 
+            .RequireAuthorization("admin");
 
-        // GET: /api/Dish - Получить все блюда с пагинацией
-        group.MapGet("/", async ([FromServices] IMediator mediator, [FromQuery] int pageNo = 1) =>
-        {
-            var data = await mediator.Send(new GetListOfProducts(null, pageNo));
-            return Results.Ok(data);
-        })
-        .WithName("GetAllDishesWithPagination")
-        .WithOpenApi();
 
-        // GET: /api/Dish/{id} - Получить блюдо по ID
         group.MapGet("/{id}", async Task<Results<Ok<Dish>, NotFound>> ([FromServices] AppDbContext db, int id) =>
         {
             var dish = await db.Dishes.AsNoTracking()
                 .FirstOrDefaultAsync(model => model.Id == id);
             return dish is not null ? TypedResults.Ok(dish) : TypedResults.NotFound();
         })
+        .AllowAnonymous() 
         .WithName("GetDishById")
         .WithOpenApi();
 
-        // PUT: /api/Dish/{id} - Обновить блюдо
         group.MapPut("/{id}", async Task<Results<Ok, NotFound, BadRequest<string>>> (
-            [FromServices] AppDbContext db, // ВОССТАНОВЛЕНО
-            int id, // ВОССТАНОВЛЕНО (из маршрута)
-            [FromForm] string dish, // Объект Dish в виде JSON-строки
-            [FromForm] IFormFile? file, // Файл (опционально)
-            [FromServices] IMediator mediator) => // Медиатор для SaveImage
+            [FromServices] AppDbContext db,
+            int id,
+            [FromForm] string dish,
+            [FromForm] IFormFile? file,
+            [FromServices] IMediator mediator) =>
         {
             var updatedDish = System.Text.Json.JsonSerializer.Deserialize<Dish>(dish);
             if (updatedDish == null)
@@ -48,18 +43,11 @@ public static class DishEndpoints
                 return TypedResults.BadRequest("Не удалось десериализовать объект блюда.");
             }
 
-            // Если передан новый файл, сохраняем его
             if (file != null && file.Length > 0)
             {
                 var imageUrl = await mediator.Send(new SaveImage(file));
-                updatedDish.Image = imageUrl; // Обновляем путь в объекте
+                updatedDish.Image = imageUrl;
             }
-
-            // Если путь к изображению не был обновлен (файл не загружался), нужно получить текущий путь из БД,
-            // но для простоты executeUpdateAsync позволяет не читать объект.
-            // Если updatedDish.Image null, то путь к изображению будет сброшен! 
-            // Для корректного обновления без чтения из БД нужен более сложный UseCase,
-            // но для компиляции и базовой работы подойдет следующее:
 
             var affected = await db.Dishes
                 .Where(model => model.Id == id)
@@ -67,26 +55,24 @@ public static class DishEndpoints
                     .SetProperty(m => m.Name, updatedDish.Name)
                     .SetProperty(m => m.Description, updatedDish.Description)
                     .SetProperty(m => m.Calories, updatedDish.Calories)
-                    .SetProperty(m => m.Image, updatedDish.Image) // Обновляем, даже если null (сбросится), или новым путем
+                    .SetProperty(m => m.Image, updatedDish.Image)
                     .SetProperty(m => m.CategoryId, updatedDish.CategoryId)
                 );
 
             return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
         })
-        .DisableAntiforgery()
         .WithName("UpdateDish")
         .WithOpenApi();
 
-        // GET: /api/Dish/{category:alpha?} - Получить блюда с пагинацией и фильтром
         group.MapGet("/{category:alpha?}", async ([FromServices] IMediator mediator, string? category, int pageNo = 1) =>
         {
             var data = await mediator.Send(new GetListOfProducts(category, pageNo));
             return Results.Ok(data);
         })
+        .AllowAnonymous() 
         .WithName("GetDishesWithPaginationAndFilter")
         .WithOpenApi();
 
-        // DELETE: /api/Dish/{id} - Удалить блюдо
         group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> ([FromServices] AppDbContext db, int id) =>
         {
             var affected = await db.Dishes
@@ -97,10 +83,9 @@ public static class DishEndpoints
         .WithName("DeleteDish")
         .WithOpenApi();
 
-        // POST: /api/Dish - Создать блюдо
         group.MapPost("/", async Task<Results<Created<Dish>, BadRequest<string>>> (
-            [FromForm] string dish,     // Объект Dish в виде JSON-строки
-            [FromForm] IFormFile? file, // Файл
+            [FromForm] string dish,
+            [FromForm] IFormFile? file,
             [FromServices] AppDbContext db,
             [FromServices] IMediator mediator) =>
         {
@@ -110,17 +95,18 @@ public static class DishEndpoints
                 return TypedResults.BadRequest("Не удалось десериализовать объект блюда.");
             }
 
-            // Сохраняем изображение и получаем URL
             var imageUrl = await mediator.Send(new SaveImage(file));
-            newDish.Image = imageUrl; // Устанавливаем URL в объект
+            newDish.Image = imageUrl;
 
             db.Dishes.Add(newDish);
             await db.SaveChangesAsync();
 
             return TypedResults.Created($"/api/Dish/{newDish.Id}", newDish);
         })
-        .DisableAntiforgery()
         .WithName("CreateDish")
         .WithOpenApi();
+
+    
     }
+
 }

@@ -1,18 +1,27 @@
 ﻿using System.Text.Json;
 using System.Text;
+using WEB_353504_Bogdanovich.UI.Services.Authentication;
+using WEB_353504_Bogdanovich.UI.Models;
+using WEB_353504_Bogdanovich.Domain.Entities;
 
 namespace WEB_353504_Bogdanovich.UI.Services.ProductService
 {
     public class ApiProductService : IProductService
     {
         private readonly HttpClient _httpClient;
+        private readonly ITokenAccessor _tokenAccessor;
         private readonly int _pageSize;
         private readonly JsonSerializerOptions _serializerOptions;
         private readonly ILogger<ApiProductService> _logger;
 
-        public ApiProductService(HttpClient httpClient, IConfiguration configuration, ILogger<ApiProductService> logger)
+        public ApiProductService(
+            HttpClient httpClient,
+            IConfiguration configuration,
+            ILogger<ApiProductService> logger,
+            ITokenAccessor tokenAccessor)
         {
             _httpClient = httpClient;
+            _tokenAccessor = tokenAccessor;
             _pageSize = configuration.GetSection("ItemsPerPage").Get<int>();
             _serializerOptions = new JsonSerializerOptions
             {
@@ -25,6 +34,7 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
         {
             try
             {
+                await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient, false);
                 var urlBuilder = new StringBuilder("Dish");
 
                 if (!string.IsNullOrEmpty(categoryNormalizedName))
@@ -34,16 +44,13 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
 
                 string querySeparator = "?";
 
-
                 urlBuilder.Append($"{querySeparator}pageNo={pageNo}");
                 querySeparator = "&";
-
 
                 if (_pageSize != 3)
                 {
                     urlBuilder.Append($"{querySeparator}pageSize={_pageSize}");
                 }
-
 
                 var response = await _httpClient.GetAsync(urlBuilder.ToString());
 
@@ -54,6 +61,11 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
                 }
                 _logger.LogError($"Не удалось получить данные с сервера. Статус: {response.StatusCode}");
                 return ResponseData<ListModel<Dish>>.Error($"Ошибка сервера: {response.StatusCode}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError($"Пользовательский токен недоступен для получения списка: {ex.Message}");
+                return ResponseData<ListModel<Dish>>.Error("Ошибка авторизации. Войдите в систему.");
             }
             catch (HttpRequestException ex)
             {
@@ -91,7 +103,7 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
                     return ResponseData<Dish>.Error("API вернул пустой объект.");
                 }
 
-                _logger.LogError($"[DELETE DIAGNOSTIC] Ошибка сервера. Статус: {response.StatusCode}. Ответ: {responseContent}");
+                _logger.LogError($"Ошибка сервера. Статус: {response.StatusCode}. Ответ: {responseContent}");
 
 
                 var errorData = JsonSerializer.Deserialize<ResponseData<Dish>>(responseContent, _serializerOptions);
@@ -100,7 +112,7 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
             }
             catch (Exception ex)
             {
-                _logger.LogError($"[DELETE DIAGNOSTIC] Ошибка сети при запросе блюда {id}: {ex.Message}");
+                _logger.LogError($"Ошибка сети при запросе блюда {id}: {ex.Message}");
                 return ResponseData<Dish>.Error($"Ошибка сети: {ex.Message}");
             }
         }
@@ -109,22 +121,20 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
         {
             try
             {
+                await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient, false);
+
                 var content = new MultipartFormDataContent();
 
                 var dishJson = JsonSerializer.Serialize(product);
-
                 content.Add(new StringContent(dishJson, Encoding.UTF8, "application/json"), "dish");
 
                 if (formFile != null && formFile.Length > 0)
                 {
                     var fileContent = new StreamContent(formFile.OpenReadStream());
                     fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(formFile.ContentType);
-
-
                     content.Add(fileContent, "file", formFile.FileName);
                 }
 
-                // ИСПРАВЛЕНО: Явно указываем относительный путь "Dish"
                 var response = await _httpClient.PostAsync("Dish", content);
 
                 if (response.IsSuccessStatusCode)
@@ -145,6 +155,11 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
 
                 return ResponseData<Dish>.Error(errorMessage);
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError($"Пользовательский токен недоступен для создания блюда: {ex.Message}");
+                return ResponseData<Dish>.Error("Ошибка авторизации. Войдите в систему.");
+            }
             catch (Exception ex)
             {
                 _logger.LogError($"Исключение при создании блюда: {ex.Message}");
@@ -156,31 +171,43 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
         {
             try
             {
+                await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient, false);
+
                 var content = new MultipartFormDataContent();
 
-                // ИСПРАВЛЕНО: Сериализуем весь объект в JSON, как требует API-эндпоинт MapPut
                 var dishJson = JsonSerializer.Serialize(product);
                 content.Add(new StringContent(dishJson, Encoding.UTF8, "application/json"), "dish");
 
-                // Добавляем файл
                 if (formFile != null && formFile.Length > 0)
                 {
                     var fileContent = new StreamContent(formFile.OpenReadStream());
                     fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(formFile.ContentType);
 
-                    // Ключ "file" (вместо "formFile" или других)
                     content.Add(fileContent, "file", formFile.FileName);
                 }
 
-                // Отправляем PUT запрос
-                var response = await _httpClient.PutAsync($"Dish/{id}", content);
+                var response = await _httpClient.PutAsync($"Dish/{id}", content); 
 
-                return response.IsSuccessStatusCode
-                    ? ResponseData<object>.Success(null)
-                    : ResponseData<object>.Error($"Ошибка: {response.StatusCode}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return ResponseData<object>.Success(null);
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    _logger.LogError($"Ошибка обновления блюда: {response.StatusCode} - {error}");
+                    string errorMessage = string.IsNullOrEmpty(error) ? $"Ошибка сервера: {response.StatusCode}" : $"Ошибка сервера: {response.StatusCode}. Детали: {error}";
+                    return ResponseData<object>.Error(errorMessage);
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError($"Пользовательский токен недоступен для обновления блюда: {ex.Message}");
+                return ResponseData<object>.Error("Ошибка авторизации. Войдите в систему.");
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Исключение при обновлении блюда: {ex.Message}");
                 return ResponseData<object>.Error(ex.Message);
             }
         }
@@ -189,12 +216,18 @@ namespace WEB_353504_Bogdanovich.UI.Services.ProductService
         {
             try
             {
-                // Правильный относительный путь: Dish/{id}
+                await _tokenAccessor.SetAuthorizationHeaderAsync(_httpClient, false);
+
                 var response = await _httpClient.DeleteAsync($"Dish/{id}");
 
                 return response.IsSuccessStatusCode
                     ? ResponseData<object>.Success(null)
                     : ResponseData<object>.Error($"Ошибка: {response.StatusCode}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogError($"Пользовательский токен недоступен для удаления блюда: {ex.Message}");
+                return ResponseData<object>.Error("Ошибка авторизации. Войдите в систему.");
             }
             catch (Exception ex)
             {
